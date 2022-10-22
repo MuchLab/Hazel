@@ -1,6 +1,9 @@
 #include "hzpch.h"
 #include "Application.h"
+
 #include "Log.h"
+#include "Hazel/Input.h"
+
 #include <glad/glad.h>
 namespace Hazel {
 
@@ -52,6 +55,9 @@ namespace Hazel {
 			{
 				layer->OnUpdate();
 			}
+
+			auto[x, y] = Input::GetMousePos();
+			HZ_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
