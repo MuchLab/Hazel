@@ -11,7 +11,7 @@ namespace Hazel {
 		//App Event
 		AppTick, AppUpdate, AppRender,
 		//Keyboard Event
-		KeyPressed, KeyReleased,
+		KeyPressed, KeyReleased, KeyTyped,
 		//Mouse Event
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
@@ -45,7 +45,7 @@ namespace Hazel {
 		{
 			return GetCategoryFlags() & category;
 		}
-	protected:
+	public:
 		bool m_Handled = false;
 	};
 
