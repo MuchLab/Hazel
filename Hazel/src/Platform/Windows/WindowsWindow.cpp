@@ -6,7 +6,6 @@
 #include "Hazel/Event/KeyEvent.h"
 #include "Hazel/Event/MouseEvent.h"
 #include "imgui.h"
-#include "Platform/OpenGL/ImGuiOpenGLCallback.h"
 
 #include <glad/glad.h>
 namespace Hazel {
