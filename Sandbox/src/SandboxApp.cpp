@@ -1,4 +1,5 @@
 #include <Hazel.h>
+#include "imGui/imgui.h"
 
 class ExampleLayer : public Hazel::Layer {
 public:
@@ -13,6 +14,14 @@ public:
 			HZ_TRACE("Tab key is pressed!(poll)");
 	}
 
+	void OnImGuiRender() override
+	{
+		ImGui::Begin("TEST");
+		ImGui::Text("HelloWorld.");
+		ImGui::End();
+	}
+
+
 	void OnEvent(Hazel::Event& event) override
 	{
 		if (event.GetEventType() == Hazel::EventType::KeyPressed)
@@ -24,6 +33,8 @@ public:
 		}
 	}
 };
+
+
 
 class Sandbox : public Hazel::Application
 {
