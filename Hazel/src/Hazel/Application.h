@@ -1,5 +1,4 @@
 #pragma once
-#include "Core.h"
 #include "Window.h"
 #include "Event/ApplicationEvent.h"
 #include "Event/KeyEvent.h"
