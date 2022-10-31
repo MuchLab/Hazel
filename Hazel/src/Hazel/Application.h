@@ -1,8 +1,10 @@
 #pragma once
 #include "Window.h"
+
 #include "Event/ApplicationEvent.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
+
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 
@@ -28,8 +30,12 @@ namespace Hazel {
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
+
 	private:
 		static Application* s_Instance;		
+
+	private:
+		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 	};
 
 	Application* CreateApplication();
