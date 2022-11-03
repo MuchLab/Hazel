@@ -9,8 +9,12 @@ namespace Hazel {
 
 		void Bind() const;
 		void Unbind() const;
+
+		inline BufferLayout& GetLayout() { return m_Layout; }
+		inline void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
 	private:
 		uint32_t m_RendererID;
+		BufferLayout m_Layout;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer {

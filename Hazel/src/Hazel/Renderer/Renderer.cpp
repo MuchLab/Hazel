@@ -2,5 +2,5 @@
 #include "Renderer.h"
 
 namespace Hazel {
-	RendererAPI Renderer::s_RendererAPI = RendererAPI::None;
+	RendererAPI Renderer::s_RendererAPI = RendererAPI::OpenGL;
 }
