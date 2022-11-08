@@ -16,7 +16,7 @@ namespace Hazel {
 
 		inline glm::mat4 GetProjectionMatrix() { return m_ProjectionMatrix; }
 		inline glm::mat4 GetViewMatrix() { return m_ViewMatrix; }
-		inline glm::mat4 GetProjectionViewMatrix() { return m_ProjectionViewMatrix; }
+		inline glm::mat4 GetProjectionViewMatrix() { return m_ViewProjectionMatrix; }
 	private:
 		void RecalculateViewMatrix();
 
@@ -26,7 +26,7 @@ namespace Hazel {
 
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
-		glm::mat4 m_ProjectionViewMatrix;
+		glm::mat4 m_ViewProjectionMatrix;
 	};
 
 }
