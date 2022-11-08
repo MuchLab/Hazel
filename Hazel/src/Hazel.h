@@ -2,7 +2,7 @@
 
 //For Hazel application
 
-//---------Core----------------------------------
+//---------App-----------------------------------
 #include "Hazel/Application.h"
 #include "Hazel/Log.h"
 #include "Hazel/Layer.h"
@@ -10,6 +10,10 @@
 #include "Hazel/KeyCodes.h"
 #include "Hazel/MouseButtonCodes.h"
 #include "glm/glm.hpp"
+//-----------------------------------------------
+
+//---------Core----------------------------------
+#include "Hazel/Core/Timestep.h"
 //-----------------------------------------------
 
 //---------ImGui---------------------------------

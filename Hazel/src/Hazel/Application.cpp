@@ -3,6 +3,10 @@
 
 #include "Hazel/Input.h"
 #include "Hazel/Renderer/Renderer.h"
+
+#include "Hazel/Core/Timestep.h"
+
+#include <glfw/glfw3.h>
 namespace Hazel {
 
 	Application* Application::s_Instance = nullptr;
@@ -20,7 +24,7 @@ namespace Hazel {
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverLayer(m_ImGuiLayer);
 
-
+		
 	}
 
 	Application::~Application()
@@ -52,11 +56,12 @@ namespace Hazel {
 	{
 		while (m_Running)
 		{
-
-			
+			float time = (float)glfwGetTime();
+			Timestep ts = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 			
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(ts);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)

@@ -31,6 +31,7 @@ namespace Hazel {
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 
+		float m_LastFrameTime = 0.0f;
 	private:
 		static Application* s_Instance;
 	};
