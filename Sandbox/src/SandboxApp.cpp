@@ -17,11 +17,12 @@ public:
 			layout(location = 1) in vec4 a_Color;
 			out vec4 v_Color;
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			void main()
 			{
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -93,6 +94,8 @@ public:
 		m_SquareVertexArray->SetIndexBuffer(squareIB);
 
 		m_SquareShader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
+
+		
 	}
 
 	void OnUpdate(Hazel::Timestep ts) override
@@ -119,7 +122,21 @@ public:
 
 		Hazel::Renderer::BeginScene(m_Camera);
 
-		Hazel::Renderer::Submit(m_SquareShader, m_SquareVertexArray);
+
+		
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 1.0f));
+		//m_SquareMatrix = glm::translate(m_SquareMatrix, glm::vec3(8.0f, 4.5f, 0.5f));
+		for (int y = 0; y < 20; y++)
+		{
+			for (int x = 0; x < 20; x++)
+			{
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Hazel::Renderer::Submit(m_SquareShader, m_SquareVertexArray, transform);
+			}
+		}
+		
+		
 
 		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
