@@ -43,7 +43,7 @@ namespace Hazel {
 	{
 		glBindVertexArray(0);
 	}
-	void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer>& buffer)
+	void OpenGLVertexArray::AddVertexBuffer(Ref<VertexBuffer>& buffer)
 	{
 		HZ_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout currently!");
 		glBindVertexArray(m_RendererID);
@@ -65,7 +65,7 @@ namespace Hazel {
 		}
 		m_VertexBuffers.push_back(buffer);
 	}
-	void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer>& buffer)
+	void OpenGLVertexArray::SetIndexBuffer(Ref<IndexBuffer>& buffer)
 	{
 		m_IndexBuffer = buffer;
 	}
