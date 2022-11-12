@@ -38,19 +38,19 @@ public:
 		squareIB.reset(Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVertexArray->SetIndexBuffer(squareIB);
 
-		m_SquareShader.reset(Hazel::Shader::Create("assets/shaders/Square.glsl"));
+		m_ShaderLib.Add(Hazel::Shader::Create("assets/shaders/Square.glsl"));
 
 		//////////////////////////////////////////////////
 		// ANOTHER SQUARE ////////////////////////////////
 		//////////////////////////////////////////////////
 
-		m_TextureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
+		auto& textureShader = m_ShaderLib.Load("assets/shaders/Texture.glsl");
 
 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 
 		m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep ts) override
@@ -80,22 +80,23 @@ public:
 		
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 1.0f));
 
+		auto& squareShader = m_ShaderLib.Get("Square");
 		for (int y = 0; y < 20; y++)
 		{
 			
 			for (int x = 0; x < 20; x++)
 			{
-				std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_SquareShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+				std::dynamic_pointer_cast<Hazel::OpenGLShader>(squareShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Hazel::Renderer::Submit(m_SquareShader, m_SquareVertexArray, transform);
+				Hazel::Renderer::Submit(squareShader, m_SquareVertexArray, transform);
 			}
 		}
-
+		auto& textureShader = m_ShaderLib.Get("Texture");
 		m_Texture->Bind();
-		Hazel::Renderer::Submit(m_TextureShader, m_SquareVertexArray, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(textureShader, m_SquareVertexArray, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		m_ChernoLogoTexture->Bind();
-		Hazel::Renderer::Submit(m_TextureShader, m_SquareVertexArray, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(textureShader, m_SquareVertexArray, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		Hazel::Renderer::EndScene();
 	}
@@ -112,11 +113,10 @@ public:
 	}
 
 private:
+	Hazel::ShaderLibrary m_ShaderLib;
 
-	Hazel::Ref<Hazel::Shader> m_SquareShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVertexArray;
 
-	Hazel::Ref<Hazel::Shader> m_TextureShader;
 	Hazel::Ref<Hazel::Texture2D>m_Texture;
 
 	Hazel::Ref<Hazel::Texture2D>m_ChernoLogoTexture;
