@@ -19,13 +19,26 @@ namespace Hazel {
 		m_Width = width;
 		m_Height = height;
 
+		GLenum internalFormat, dataFormat;
+		if (channels == 3)
+		{
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
+		else if (channels == 4)
+		{
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		HZ_ASSERT(internalFormat & dataFormat, "Unknown channels!")
+
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, GL_RGB8, width, height);
+		glTextureStorage2D(m_RendererID, 1, internalFormat, width, height);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
 	}
 
