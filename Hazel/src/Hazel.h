@@ -9,7 +9,7 @@
 #include "Hazel/Input.h"
 #include "Hazel/KeyCodes.h"
 #include "Hazel/MouseButtonCodes.h"
-#include "glm/glm.hpp"
+#include "Hazel/OrthographicCameraController.h"
 //-----------------------------------------------
 
 //---------Entry Point---------------------------

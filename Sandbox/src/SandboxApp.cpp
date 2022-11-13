@@ -1,10 +1,11 @@
 #include <Hazel.h>
+#include "glm/glm.hpp"
 #include "imGui/imgui.h"
 
 class ExampleLayer : public Hazel::Layer {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(m_Camera.GetPosition())
+		: Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
 	{
 
 		//////////////////////////////////////////////////
@@ -55,27 +56,12 @@ public:
 
 	void OnUpdate(Hazel::Timestep ts) override
 	{
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_A))
-			m_CameraRotation -= m_CameraRotateSpeed * ts;
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
-			m_CameraRotation += m_CameraRotateSpeed * ts;
+		m_CameraController.OnUpdate(ts);
 
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Hazel::RenderCommand::Clear();
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-
-		Hazel::Renderer::BeginScene(m_Camera);
+		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 1.0f));
@@ -108,8 +94,9 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Hazel::Event& event) override
+	void OnEvent(Hazel::Event& e) override
 	{
+		m_CameraController.OnEvent(e);
 	}
 
 private:
@@ -121,13 +108,9 @@ private:
 
 	Hazel::Ref<Hazel::Texture2D>m_ChernoLogoTexture;
 
-	Hazel::OrthographicCamera m_Camera;
+	Hazel::OrthographicCameraController m_CameraController;
 
-	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 2.0f;
-
-	float m_CameraRotation = 0.0f;
-	float m_CameraRotateSpeed = 180.0f;
+	
 
 	glm::vec3 m_SquareColor = glm::vec3(0.8f, 0.2f, 0.5f);
 };
