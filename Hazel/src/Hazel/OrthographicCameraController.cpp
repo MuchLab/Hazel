@@ -33,8 +33,6 @@ namespace Hazel {
 		
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);
-
-		
 	}
 
 	void OrthographicCameraController::OnEvent(Event& e)

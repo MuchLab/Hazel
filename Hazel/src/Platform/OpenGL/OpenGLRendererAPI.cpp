@@ -11,6 +11,11 @@ namespace Hazel {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
+	void OpenGLRendererAPI::SetViewPort(unsigned int width, unsigned int height)
+	{
+		glViewport(0, 0, width, height);
+	}
+
 	void OpenGLRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
