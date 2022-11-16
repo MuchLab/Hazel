@@ -18,4 +18,6 @@ private:
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
 	glm::vec4 m_SquareColor = glm::vec4(0.8f, 0.2f, 0.5f, 1.0f);
+
+	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture;
 };
