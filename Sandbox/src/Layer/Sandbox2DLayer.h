@@ -17,5 +17,5 @@ private:
 	Hazel::ShaderLibrary m_ShaderLibrary;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
-	glm::vec3 m_SquareColor = glm::vec3(0.8f, 0.2f, 0.5f);
+	glm::vec4 m_SquareColor = glm::vec4(0.8f, 0.2f, 0.5f, 1.0f);
 };
