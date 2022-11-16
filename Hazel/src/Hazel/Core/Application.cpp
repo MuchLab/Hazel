@@ -1,7 +1,7 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include "Hazel/Input.h"
+#include "Hazel/Core/Input.h"
 #include "Hazel/Renderer/Renderer.h"
 
 #include "Hazel/Core/Timestep.h"

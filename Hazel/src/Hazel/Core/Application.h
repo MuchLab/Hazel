@@ -1,12 +1,12 @@
 #pragma once
 #include "Window.h"
 
-#include "Event/ApplicationEvent.h"
-#include "Event/KeyEvent.h"
-#include "Event/MouseEvent.h"
+#include "Hazel/Event/ApplicationEvent.h"
+#include "Hazel/Event/KeyEvent.h"
+#include "Hazel/Event/MouseEvent.h"
 
 #include "LayerStack.h"
-#include "ImGui/ImGuiLayer.h"
+#include "Hazel/ImGui/ImGuiLayer.h"
 
 namespace Hazel {
 	class HAZEL_API Application

@@ -1,7 +1,7 @@
 #include "hzpch.h"
 #include "ImGuiLayer.h"
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
