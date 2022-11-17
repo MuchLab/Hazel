@@ -23,8 +23,8 @@ namespace Hazel {
 		struct Renderer2DStorage
 		{
 			Ref<VertexArray> VertexArray;
-			Ref<Shader> FlatColorShader;
 			Ref<Shader> TextureShader;
+			Ref<Texture2D> WhiteTexture;
 		};
 		static Renderer2DStorage* s_Data;
 	};
