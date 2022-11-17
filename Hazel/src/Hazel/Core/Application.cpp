@@ -86,7 +86,6 @@ namespace Hazel {
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		HZ_CORE_TRACE("{0}, {1}", e.GetWidth(), e.GetHeight());
 		m_Minimize = e.GetWidth() == 0 || e.GetHeight() == 0;
 		Renderer::SetViewport(e.GetWidth(), e.GetHeight());
 		return false;
