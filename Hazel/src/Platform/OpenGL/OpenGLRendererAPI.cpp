@@ -7,6 +7,8 @@ namespace Hazel {
 
 	void OpenGLRendererAPI::Init()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -15,21 +17,29 @@ namespace Hazel {
 
 	void OpenGLRendererAPI::SetViewPort(unsigned int width, unsigned int height)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glViewport(0, 0, width, height);
 	}
 
 	void OpenGLRendererAPI::Clear()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 

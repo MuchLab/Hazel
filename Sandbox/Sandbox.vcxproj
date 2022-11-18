@@ -133,7 +133,6 @@
   <ItemGroup>
     <ClInclude Include="src\Layer\ExampleLayer.h" />
     <ClInclude Include="src\Layer\Sandbox2DLayer.h" />
-    <ClInclude Include="src\Profiling\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Layer\ExampleLayer.cpp" />
