@@ -10,6 +10,9 @@
     <Filter Include="src\Hazel\Core">
       <UniqueIdentifier>{48D253A8-34A0-47AE-1D34-B8D409A12313}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Hazel\Debug">
+      <UniqueIdentifier>{6676DAB2-D201-4877-DB12-CB6B471DA477}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Hazel\Event">
       <UniqueIdentifier>{41EDF5B2-AD78-6377-B689-E66B2294BF77}</UniqueIdentifier>
     </Filter>
@@ -87,6 +90,9 @@
     <ClInclude Include="src\Hazel\Core\Window.h">
       <Filter>src\Hazel\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hazel\Debug\Imstrumentor.h">
+      <Filter>src\Hazel\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hazel\EntryPoint.h">
       <Filter>src\Hazel</Filter>
     </ClInclude>
@@ -148,6 +154,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
@@ -993,10 +1002,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hazel\Debug\Imstrumentor.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Core\Application.cpp">
@@ -1059,6 +1064,9 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1074,11 +1082,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\Users\Public\Desktop\Google Chrome.lnk" />
   </ItemGroup>
 </Project>
