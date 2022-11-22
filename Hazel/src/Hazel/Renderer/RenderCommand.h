@@ -10,7 +10,7 @@ namespace Hazel {
 		inline static void SetViewPort(unsigned int width, unsigned int height) { s_RendererAPI->SetViewPort(width, height); }
 		inline static void Clear() { s_RendererAPI->Clear(); }
 		inline static void SetClearColor(const glm::vec4& color) { s_RendererAPI->SetClearColor(color); }
-		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray) { s_RendererAPI->DrawIndexed(vertexArray); }
+		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t size = 0) { s_RendererAPI->DrawIndexed(vertexArray, size); }
 
 	private:
 		static RendererAPI* s_RendererAPI;

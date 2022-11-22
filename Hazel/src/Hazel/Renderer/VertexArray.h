@@ -11,6 +11,7 @@ namespace Hazel {
 
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
+
 		virtual void AddVertexBuffer(Ref<VertexBuffer>& buffer) = 0;
 		virtual void SetIndexBuffer(Ref<IndexBuffer>& buffer) = 0;
 		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const = 0;
