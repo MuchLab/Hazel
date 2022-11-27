@@ -31,6 +31,8 @@ namespace Hazel {
 			glm::vec3 Position;
 			glm::vec4 Color;
 			glm::vec2 TexCoord;
+			float TexIndex;
+			float TilingFactor;
 		};
 
 		struct Renderer2DData
@@ -38,6 +40,7 @@ namespace Hazel {
 			const uint32_t MaxQuads = 10000;
 			const uint32_t MaxVertices = MaxQuads * 4;
 			const uint32_t MaxIndices = MaxQuads * 6;
+			static const uint32_t MaxTextureSlots = 32;
 
 			QuadVertex* QuadVertexBufferBase = nullptr;
 			QuadVertex* QuadVertexBufferPtr = nullptr;
@@ -46,7 +49,9 @@ namespace Hazel {
 			Ref<VertexArray> QuadVertexArray;
 			Ref<Shader> TextureShader;
 			Ref<Texture2D> WhiteTexture;
+			std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
 
+			uint32_t TextureSlotIndex = 1;
 			uint32_t QuadIndexCount = 0;
 		};
 		static Renderer2DData s_Data;

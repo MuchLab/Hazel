@@ -1,5 +1,5 @@
 workspace "Hazel"
-	architecture "x64"
+	architecture "x86_64"
 	startproject "Sandbox"
 
 	configurations
@@ -8,19 +8,28 @@ workspace "Hazel"
 		"Release",
 		"Dist"
 	}
+	
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
-IncludeDir["imGui"] = "Hazel/vendor/imGui"
+IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 IncludeDir["glm"] = "Hazel/vendor/glm"
 IncludeDir["stb_image"] = "Hazel/vendor/stb_image"
 
-include "Hazel/vendor/GLFW"
-include "Hazel/vendor/Glad"
-include "Hazel/vendor/imGui"
+group "Dependencies"
+	include "Hazel/vendor/GLFW"
+	include "Hazel/vendor/Glad"
+	include "Hazel/vendor/imgui"
+
+group ""
 
 project "Hazel"
 	location "Hazel"
@@ -39,9 +48,10 @@ project "Hazel"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp"
+		"%{prj.name}/vendor/stb_image/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
 
 	defines
@@ -55,16 +65,16 @@ project "Hazel"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.imGui}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}"
 	}
 
-	links
-	{
+	links 
+	{ 
 		"GLFW",
 		"Glad",
-		"imGui",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -81,7 +91,7 @@ project "Hazel"
 		defines "HZ_DEBUG"
 		runtime "Debug"
 		symbols "on"
-		
+
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		runtime "Release"
@@ -98,10 +108,10 @@ project "Sandbox"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
-	
+
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-	
+
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -113,10 +123,9 @@ project "Sandbox"
 		"Hazel/vendor/spdlog/include",
 		"Hazel/src",
 		"Hazel/vendor",
-		"Sandbox/src",
 		"%{IncludeDir.glm}"
 	}
-	
+
 	links
 	{
 		"Hazel"
@@ -124,7 +133,8 @@ project "Sandbox"
 
 	filter "system:windows"
 		systemversion "latest"
-		filter "configurations:Debug"
+		
+	filter "configurations:Debug"
 		defines "HZ_DEBUG"
 		runtime "Debug"
 		symbols "on"

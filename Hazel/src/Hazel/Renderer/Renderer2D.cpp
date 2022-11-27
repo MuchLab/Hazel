@@ -21,7 +21,9 @@ namespace Hazel {
 		BufferLayout layout = {
 			{ "a_Position", ShaderDataType::Float3 },
 			{ "a_Color", ShaderDataType::Float4 },
-			{ "a_TexCoord", ShaderDataType::Float2 }
+			{ "a_TexCoord", ShaderDataType::Float2 },
+			{ "a_TexIndex", ShaderDataType::Float },
+			{ "a_TilingFactor", ShaderDataType::Float }
 		};
 
 		s_Data.QuadVertexBuffer->SetLayout(layout);
@@ -52,8 +54,14 @@ namespace Hazel {
 		uint32_t data = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&data, sizeof(uint32_t));
 
+		int32_t samplers[s_Data.MaxTextureSlots];
+		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
+			samplers[i] = i;
+
 		s_Data.TextureShader = Shader::Create("assets/shaders/Renderer2D.glsl");
-		s_Data.TextureShader->SetInt("u_Texture", 0);
+		s_Data.TextureShader->SetIntArray("u_Textures", s_Data.MaxTextureSlots, samplers);
+
+		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 	}
 
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
@@ -65,6 +73,8 @@ namespace Hazel {
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::EndScene()
@@ -85,6 +95,10 @@ namespace Hazel {
 
 	void Renderer2D::Flush()
 	{
+
+		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+			s_Data.TextureSlots[i]->Bind(i);
+
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
 	}
 
@@ -97,24 +111,34 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
+		const float texIndex = 0.0f;
+
 		s_Data.QuadVertexBufferPtr->Position = position;
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadIndexCount += 6;
@@ -137,7 +161,55 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
-		s_Data.TextureShader->Bind();
+		float texIndex = 0.0f;
+		
+		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				texIndex = (float)i;
+				break;
+			}
+		}
+
+		if (texIndex == 0.0f)
+		{
+			texIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		s_Data.QuadVertexBufferPtr->Position = position;
+		s_Data.QuadVertexBufferPtr->Color = tintColor;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = tintColor;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = tintColor;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = tintColor;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
+		/*s_Data.TextureShader->Bind();
 		
 		s_Data.TextureShader->SetFloat4("u_Color", tintColor);
 		s_Data.TextureShader->SetFloat("u_TilingFactor", tilingFactor);
@@ -147,7 +219,7 @@ namespace Hazel {
 		s_Data.TextureShader->SetMat4("u_Transform", transform);
 
 		s_Data.QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);*/
 	}
 	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float tilingFactor)
 	{

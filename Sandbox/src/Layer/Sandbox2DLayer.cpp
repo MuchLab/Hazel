@@ -10,7 +10,7 @@ Sandbox2DLayer::Sandbox2DLayer()
 	HZ_PROFILE_FUNCTION();
 
 	Hazel::Renderer2D::Init();
-	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 }
 
 void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
@@ -22,7 +22,7 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 	{
 		HZ_PROFILE_SCOPE("RenderCommand::Prepare");
 
-		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		Hazel::RenderCommand::Clear();
 	}
 
@@ -30,13 +30,8 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 		HZ_PROFILE_SCOPE("Renerer2D::Draw");
 
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		for (int i = 0; i < 100; i++)
-		{
-			for (int j = 0; j < 100; j++)
-			{
-				Hazel::Renderer2D::DrawQuad({ -1.6f + i * 0.1, -0.9f + j * 0.1 }, { 0.05f, 0.05f }, { 0.0f + i * 0.01, 0.0f + i * 0.01, 0.0f + j * 0.01, 1.0f});
-			}
-		}
+		Hazel::Renderer2D::DrawQuad({ -1.6f, -0.9f, 0.0f }, { 1.0f, 1.0f }, m_SquareColor);
+		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_CheckerboardTexture);
 		Hazel::Renderer2D::EndScene();
 	}
 }

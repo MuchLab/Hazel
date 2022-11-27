@@ -23,12 +23,14 @@ namespace Hazel {
 		virtual void Unbind() const override;
 
 		virtual void SetInt(const std::string& name, const int value) override;
+		virtual void SetIntArray(const std::string& name, int count, int* values) override;
 		virtual void SetFloat(const std::string& name, const float value) override;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& values) override;
 		virtual void SetFloat4(const std::string& name, const glm::vec4& values) override;
 		virtual void SetMat4(const std::string& name, const glm::mat4& values) override;
 
 		void OpenGLShader::UploadUniformInt(const std::string &name, const int value);
+		void OpenGLShader::UploadUniformIntArray(const std::string &name, int count, int* values);
 
 		void OpenGLShader::UploadUniformFloat(const std::string &name, const float value);
 		void OpenGLShader::UploadUniformFloat2(const std::string &name, const glm::vec2& values);
