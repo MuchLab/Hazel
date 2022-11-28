@@ -26,9 +26,10 @@ namespace Hazel {
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, Ref<Texture2D> texture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float rotation, Ref<Texture2D> texture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 	private:
+
 		struct QuadVertex
 		{
-			glm::vec3 Position;
+			glm::vec4 Position;
 			glm::vec4 Color;
 			glm::vec2 TexCoord;
 			float TexIndex;
@@ -51,8 +52,10 @@ namespace Hazel {
 			Ref<Texture2D> WhiteTexture;
 			std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
 
+			glm::vec4 QuadPositions[4];
 			uint32_t TextureSlotIndex = 1;
 			uint32_t QuadIndexCount = 0;
+
 		};
 		static Renderer2DData s_Data;
 	};

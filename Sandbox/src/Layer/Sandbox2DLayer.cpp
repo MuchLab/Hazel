@@ -10,12 +10,15 @@ Sandbox2DLayer::Sandbox2DLayer()
 	HZ_PROFILE_FUNCTION();
 
 	Hazel::Renderer2D::Init();
-	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+	m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 }
 
 void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 {
 	HZ_PROFILE_FUNCTION();
+
+	m_Rotation += ts * 60.0f;
 
 	m_CameraController.OnUpdate(ts);
 	
@@ -30,8 +33,10 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 		HZ_PROFILE_SCOPE("Renerer2D::Draw");
 
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Hazel::Renderer2D::DrawQuad({ -1.6f, -0.9f, 0.0f }, { 1.0f, 1.0f }, m_SquareColor);
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, m_CheckerboardTexture);
+		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 10.0f, 10.0f }, m_CheckerboardTexture, 10.0f);
+		Hazel::Renderer2D::DrawQuad({ -1.5f, 0.0f, 1.0f }, { 1.5f, 1.5f }, m_SquareColor, 10.0f);
+		Hazel::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f }, glm::radians(m_Rotation), m_ChernoLogoTexture, 1.0f, m_SquareColor);
+		Hazel::Renderer2D::DrawRotatedQuad({ 1.6f, -0.45f, 1.0f }, { 1.0f, 1.0f }, glm::radians(m_Rotation), m_SquareColor, 10.0f);
 		Hazel::Renderer2D::EndScene();
 	}
 }

@@ -40,11 +40,7 @@ namespace Hazel {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glEnable(GL_DEPTH_TEST); glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MULTISAMPLE);
 	}
 
 	void OpenGLRendererAPI::SetViewPort(unsigned int width, unsigned int height)
@@ -74,6 +70,7 @@ namespace Hazel {
 
 		uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 	}
 

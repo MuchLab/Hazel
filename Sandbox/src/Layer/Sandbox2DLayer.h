@@ -20,4 +20,6 @@ private:
 	glm::vec4 m_SquareColor = glm::vec4(0.8f, 0.2f, 0.5f, 1.0f);
 
 	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture;
+	Hazel::Ref<Hazel::Texture2D> m_ChernoLogoTexture;
+	float m_Rotation = 0.0f;
 };

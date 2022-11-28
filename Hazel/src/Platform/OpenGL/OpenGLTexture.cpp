@@ -95,7 +95,13 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
-		glBindTextureUnit(slot, m_RendererID);
+		GLint units;
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &units);
+
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+		//glBindTextureUnit(slot, m_RendererID);
 	}
 
 }
