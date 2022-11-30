@@ -4,7 +4,7 @@
 #include "imGui/imgui.h"
 
 ExampleLayer::ExampleLayer()
-	: Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
+	: Layer("Example"), m_CameraController(5.0f, 1280.0f / 720.0f, true)
 {
 
 	//////////////////////////////////////////////////

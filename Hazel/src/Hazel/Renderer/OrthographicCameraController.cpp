@@ -6,9 +6,10 @@
 
 namespace Hazel {
 
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool isRotation)
-		: m_AspectRatio(aspectRatio), 
-		m_Bounds({ -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }), 
+	OrthographicCameraController::OrthographicCameraController(float zoomLevel, float aspectRatio, bool isRotation)
+		: m_ZoomLevel(zoomLevel),
+		m_AspectRatio(aspectRatio), 
+		m_Bounds({ -aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }),
 		m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), 
 		m_IsRotation(isRotation)
 	{

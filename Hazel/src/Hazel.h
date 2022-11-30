@@ -28,6 +28,7 @@
 #include "Hazel/Renderer/OrthographicCamera.h"
 
 #include "Hazel/Renderer/Texture.h"
+#include "Hazel/Renderer/SubTexture2D.h"
 
 #include "Hazel/Renderer/OrthographicCameraController.h"
 //-----------------------------------------------

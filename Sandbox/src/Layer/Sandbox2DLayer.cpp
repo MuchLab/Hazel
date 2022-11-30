@@ -5,23 +5,28 @@
 
 
 Sandbox2DLayer::Sandbox2DLayer()
-	: m_CameraController(1280.0f / 720.0f, true)
+	: m_CameraController(5.0f, 1280.0f / 720.0f, true)
 {
 	HZ_PROFILE_FUNCTION();
 
 	Hazel::Renderer2D::Init();
 	m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 	m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+	m_TileMapTexture = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
 }
 
 void Sandbox2DLayer::OnAttach()
 {
 	HZ_PROFILE_FUNCTION();
 
-	m_Particle.ColorBegin = m_SquareColor;
+	m_StairSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 7, 5 }, { 128, 128 });
+	m_StoneSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 9, 7 }, { 128, 128 }, { 4, 1 });
+	m_TreeSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 0, 1 }, { 128, 128 }, { 1, 2 });
+
+	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
 	m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
-	m_Particle.LifeTime = 10.0f;
+	m_Particle.LifeTime = 1.0f;
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
 	m_Particle.Position = { 0.0f, 0.0f };
@@ -47,6 +52,7 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 	{
 		HZ_PROFILE_SCOPE("Renerer2D::Draw");
 
+#if 0
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_CheckerboardTexture, 10.0f);
 		Hazel::Renderer2D::DrawQuad({ -1.5f, 0.0f, 0.1f }, { 1.5f, 1.5f }, m_SquareColor, 10.0f);
@@ -65,8 +71,14 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 			}
 		}
 		Hazel::Renderer2D::EndScene();
+#endif
 
-		m_Particle.ColorBegin = m_SquareColor;
+		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.3f }, { 1.0f, 1.0f }, m_StairSubTexture);
+		Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.3f }, { 3.0f, 1.0f }, m_StoneSubTexture);
+		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f, 0.3f }, { 1.0f, 2.0f }, m_TreeSubTexture);
+		Hazel::Renderer2D::EndScene();
+
 		if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 		{
 			auto [x, y] = Hazel::Input::GetMousePos();

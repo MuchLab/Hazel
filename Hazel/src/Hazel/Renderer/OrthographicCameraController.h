@@ -19,7 +19,7 @@ namespace Hazel {
 	class OrthographicCameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool isRotation = false);
+		OrthographicCameraController(float zoomLevel, float aspectRatio, bool isRotation = false);
 
 		void OnUpdate(Timestep& ts);
 		void OnEvent(Event& e);
@@ -33,15 +33,16 @@ namespace Hazel {
 		bool OnWindowResized(WindowResizeEvent& e);
 
 	private:
+		float m_ZoomLevel;
 		float m_AspectRatio;
-		float m_ZoomLevel = 1.0f;
 		OrthographicCameraBounds m_Bounds;
 		OrthographicCamera m_Camera;
+		bool m_IsRotation;
+		
 
 		glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 		float m_CameraTranslationSpeed = 5.0f;
 
-		bool m_IsRotation;
 		float m_CameraRotation = 0.0f;
 		float m_CameraRotateSpeed = 180.0f;
 	};

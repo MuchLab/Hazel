@@ -23,8 +23,13 @@ private:
 
 	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture;
 	Hazel::Ref<Hazel::Texture2D> m_ChernoLogoTexture;
+	Hazel::Ref<Hazel::Texture2D> m_TileMapTexture;
 	float m_Rotation = 0.0f;
 
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;
+
+	Hazel::Ref<Hazel::SubTexture2D> m_StairSubTexture;
+	Hazel::Ref<Hazel::SubTexture2D> m_StoneSubTexture;
+	Hazel::Ref<Hazel::SubTexture2D> m_TreeSubTexture;
 };

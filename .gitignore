@@ -5,7 +5,8 @@ bin-int/
 
 # Hazel files
 *.log
-./Sandbox/**.json
+Sandbox/**.json
+Sandbox/**.ini
 
 # Visual Studio files and folder
 .vs/
