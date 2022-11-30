@@ -273,12 +273,12 @@ namespace Hazel {
 #endif
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
+	void Renderer2D::DrawQuad(glm::vec2 position, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
 	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, subTexture, tilingFactor, tintColor);
+		DrawQuad({ position.x, position.y, 0.0f }, subTexture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
+	void Renderer2D::DrawQuad(glm::vec3 position, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
 	{
 		HZ_PROFILE_FUNCTION();
 
@@ -287,6 +287,7 @@ namespace Hazel {
 
 		auto texture = subTexture->GetTexture();
 		const glm::vec2* texCoords = subTexture->GetTexCoords();
+		const glm::vec2 size = subTexture->GetSize();
 
 		float texIndex = 0.0f;
 
@@ -501,11 +502,11 @@ namespace Hazel {
 #endif
 	}
 
-	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
+	void Renderer2D::DrawRotatedQuad(glm::vec2 position, float rotation, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
 	{
-		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, subTexture, tilingFactor, tintColor);
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, rotation, subTexture, tilingFactor, tintColor);
 	}
-	void Renderer2D::DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float rotation, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
+	void Renderer2D::DrawRotatedQuad(glm::vec3 position, float rotation, Ref<SubTexture2D> subTexture, float tilingFactor, glm::vec4 tintColor)
 	{
 		HZ_PROFILE_FUNCTION();
 
@@ -514,6 +515,7 @@ namespace Hazel {
 
 		auto texture = subTexture->GetTexture();
 		const glm::vec2* texCoords = subTexture->GetTexCoords();
+		const glm::vec2 size = subTexture->GetSize();
 
 		float texIndex = 0.0f;
 

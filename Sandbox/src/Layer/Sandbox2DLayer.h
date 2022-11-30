@@ -32,4 +32,7 @@ private:
 	Hazel::Ref<Hazel::SubTexture2D> m_StairSubTexture;
 	Hazel::Ref<Hazel::SubTexture2D> m_StoneSubTexture;
 	Hazel::Ref<Hazel::SubTexture2D> m_TreeSubTexture;
+
+	uint32_t m_MapWidth = 0, m_MapHeight = 0;
+	std::unordered_map<char, Hazel::Ref<Hazel::SubTexture2D>> m_TileMap;
 };

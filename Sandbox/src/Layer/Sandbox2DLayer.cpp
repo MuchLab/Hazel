@@ -3,6 +3,22 @@
 #include "glm/glm.hpp"
 #include "imGui/imgui.h"
 
+const uint32_t MapWidth = 30;
+const char* tileMap =
+"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWDDDDDDDDDDDDDDDDWWWWWWW"
+"WWWWWDDDDSDDDDDDDDDDDDDDDWWWWW"
+"WWWDDDDDTDDTDDTDDTDDTDDDDWWWWW"
+"WWDDDDDDDDDDDDDDDDDDDDDDDDWWWW"
+"WWWDDDTDDDSDDWWWDDDDDSDDWWWWWW"
+"WWWWWDDDDDDDDWWWDDDTDDWWWWWWWW"
+"WWWWDDDDTDDDDDWDSSDDDDDWWWWWWW"
+"WWWWWDDDDDDDDDWDSSDDDDDDWWWWWW"
+"WWWWWWWWWWWWWWWDDDTDDTDDDWWWWW"
+"WWWWWWDDDDDDDDDDDDDDDDDDDDDWWW"
+"WWWWWWWDDDTDSDDTDSDTDDDDDDWWWW"
+"WWWWWWWWDDDDDDDDDDDDDDDDWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
 
 Sandbox2DLayer::Sandbox2DLayer()
 	: m_CameraController(5.0f, 1280.0f / 720.0f, true)
@@ -20,8 +36,14 @@ void Sandbox2DLayer::OnAttach()
 	HZ_PROFILE_FUNCTION();
 
 	m_StairSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 7, 5 }, { 128, 128 });
-	m_StoneSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 9, 7 }, { 128, 128 }, { 4, 1 });
-	m_TreeSubTexture = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 0, 1 }, { 128, 128 }, { 1, 2 });
+
+	m_MapWidth = MapWidth;
+	m_MapHeight = strlen(tileMap) / m_MapWidth;
+
+	m_TileMap['W'] = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 11, 11 }, { 128, 128 }, { 1, 1 });
+	m_TileMap['D'] = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 6, 11 }, { 128, 128 }, { 1, 1 });
+	m_TileMap['T'] = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 0, 1 }, { 128, 128 }, { 1, 2 });
+	m_TileMap['S'] = Hazel::SubTexture2D::CreateFromCoords(m_TileMapTexture, { 2, 3 }, { 128, 128 }, { 1, 1 });
 
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -74,9 +96,19 @@ void Sandbox2DLayer::OnUpdate(Hazel::Timestep ts)
 #endif
 
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.3f }, { 1.0f, 1.0f }, m_StairSubTexture);
-		Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.3f }, { 3.0f, 1.0f }, m_StoneSubTexture);
-		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f, 0.3f }, { 1.0f, 2.0f }, m_TreeSubTexture);
+		for (uint32_t y = 0; y < m_MapHeight; y++)
+		{
+			for (uint32_t x = 0; x < m_MapWidth; x++)
+			{
+				char tileType = tileMap[x + y * m_MapWidth];
+				Hazel::Ref<Hazel::SubTexture2D> texture;
+				if (m_TileMap.find(tileType) != m_TileMap.end())
+					texture = m_TileMap[tileType];
+				else
+					texture = m_StairSubTexture;
+				Hazel::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, m_MapHeight / 2.0f - y , 0.3f }, texture);
+			}
+		}
 		Hazel::Renderer2D::EndScene();
 
 		if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
