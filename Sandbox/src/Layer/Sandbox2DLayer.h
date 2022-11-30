@@ -1,5 +1,6 @@
 #pragma once
 #include <Hazel.h>
+#include "Particle/ParticleSystem.h"
 
 class Sandbox2DLayer : public Hazel::Layer
 {
@@ -7,6 +8,7 @@ public:
 	Sandbox2DLayer();
 	virtual ~Sandbox2DLayer() = default;
 
+	virtual void OnAttach() override;
 	virtual void OnUpdate(Hazel::Timestep ts) override;
 	virtual void OnImGuiRender() override;
 	virtual void OnEvent(Hazel::Event& event) override;
@@ -22,4 +24,7 @@ private:
 	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture;
 	Hazel::Ref<Hazel::Texture2D> m_ChernoLogoTexture;
 	float m_Rotation = 0.0f;
+
+	ParticleProps m_Particle;
+	ParticleSystem m_ParticleSystem;
 };
