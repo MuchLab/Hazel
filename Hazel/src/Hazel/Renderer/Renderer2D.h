@@ -74,7 +74,7 @@ namespace Hazel {
 		static void DrawRotatedQuad(glm::vec3 position, float rotation, Ref<SubTexture2D> subTexture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
 
-		inline static Statistics GetStat() { return s_Data.Stat; }
+		inline static Statistics GetStats() { return s_Data.Stat; }
 		inline static void ResetStat() { memset(&s_Data.Stat, 0, sizeof(Statistics)); }
 	
 	private:

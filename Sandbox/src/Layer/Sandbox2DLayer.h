@@ -18,21 +18,14 @@ private:
 
 	Hazel::ShaderLibrary m_ShaderLibrary;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+	Hazel::Ref<Hazel::Framebuffer> m_Framebuffer;
 
 	glm::vec4 m_SquareColor = glm::vec4(0.8f, 0.2f, 0.5f, 1.0f);
 
 	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture;
 	Hazel::Ref<Hazel::Texture2D> m_ChernoLogoTexture;
-	Hazel::Ref<Hazel::Texture2D> m_TileMapTexture;
 	float m_Rotation = 0.0f;
 
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;
-
-	Hazel::Ref<Hazel::SubTexture2D> m_StairSubTexture;
-	Hazel::Ref<Hazel::SubTexture2D> m_StoneSubTexture;
-	Hazel::Ref<Hazel::SubTexture2D> m_TreeSubTexture;
-
-	uint32_t m_MapWidth = 0, m_MapHeight = 0;
-	std::unordered_map<char, Hazel::Ref<Hazel::SubTexture2D>> m_TileMap;
 };

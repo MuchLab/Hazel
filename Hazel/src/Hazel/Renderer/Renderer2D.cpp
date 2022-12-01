@@ -213,19 +213,10 @@ namespace Hazel {
 		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
-		constexpr int x = 10, y = 10;
-		constexpr float sheetWidth = 2560.0f, sheetHeight = 1664.0f;
-		constexpr float eachSize = 128.0f, texSize = 3;
-		glm::vec2 texCoord[4] = {
-			{x * (eachSize / sheetWidth), y * (eachSize / sheetHeight)},
-			{(x + texSize) * (eachSize / sheetWidth), y * (eachSize / sheetHeight)},
-			{(x + texSize) * (eachSize / sheetWidth), (y + texSize) * (eachSize / sheetHeight)},
-			{x * (eachSize / sheetWidth), (y + texSize) * (eachSize / sheetHeight)}
-		};
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadPositions[0];
 		s_Data.QuadVertexBufferPtr->Color = tintColor;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoord[0];
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 
@@ -233,7 +224,7 @@ namespace Hazel {
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadPositions[1];
 		s_Data.QuadVertexBufferPtr->Color = tintColor;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoord[1];
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 
@@ -241,7 +232,7 @@ namespace Hazel {
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadPositions[2];
 		s_Data.QuadVertexBufferPtr->Color = tintColor;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoord[2];
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 
@@ -249,7 +240,7 @@ namespace Hazel {
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadPositions[3];
 		s_Data.QuadVertexBufferPtr->Color = tintColor;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoord[3];
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 
