@@ -7,6 +7,39 @@ namespace Hazel {
 	OpenGLFramebuffer::OpenGLFramebuffer(FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
+		Invalidate();
+	}
+	OpenGLFramebuffer::~OpenGLFramebuffer()
+	{
+		glDeleteFramebuffers(1, &m_RendererID);
+		glDeleteTextures(1, &m_ColorAttachment);
+		glDeleteTextures(1, &m_DepthAttachment);
+	}
+	void OpenGLFramebuffer::Bind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+	}
+	void OpenGLFramebuffer::Unbind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
+	{
+		m_Specification.Width = width;
+		m_Specification.Height = height;
+
+		Invalidate();
+	}
+
+	void OpenGLFramebuffer::Invalidate()
+	{
+		if (m_RendererID)
+		{
+			glDeleteFramebuffers(1, &m_RendererID);
+			glDeleteTextures(1, &m_ColorAttachment);
+			glDeleteTextures(1, &m_DepthAttachment);
+		}
 		glCreateFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
@@ -27,18 +60,6 @@ namespace Hazel {
 
 		HZ_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-	OpenGLFramebuffer::~OpenGLFramebuffer()
-	{
-		glDeleteFramebuffers(1, &m_RendererID);
-	}
-	void OpenGLFramebuffer::Bind()
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-	}
-	void OpenGLFramebuffer::Unbind()
-	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
