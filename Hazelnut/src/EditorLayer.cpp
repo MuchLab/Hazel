@@ -32,8 +32,8 @@ namespace Hazel {
 		Hazel::Renderer2D::ResetStat();
 
 		m_Rotation += ts * 60.0f;
-
-		m_CameraController.OnUpdate(ts);
+		if(m_ViewportFocused)
+			m_CameraController.OnUpdate(ts);
 
 		{
 			HZ_PROFILE_SCOPE("RenderCommand::Prepare");
@@ -143,6 +143,11 @@ namespace Hazel {
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Renderer");
+		m_ViewportFocused = ImGui::IsWindowFocused();
+		m_ViewportHovered = ImGui::IsWindowHovered();
+		//focus: true;hover: true;bock:false
+		//focus: true;hover: false;bock:true(false)
+		Application::Get().GetImGuiLayer()->BlockEvents((!m_ViewportFocused && !m_ViewportHovered) || (!m_ViewportFocused && m_ViewportHovered));
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{

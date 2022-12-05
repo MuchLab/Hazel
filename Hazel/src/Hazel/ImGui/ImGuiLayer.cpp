@@ -61,6 +61,16 @@ namespace Hazel {
 		HZ_PROFILE_FUNCTION();
 	}
 
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if (m_BlockEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.m_Handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.m_Handled |= event.IsInCategory(EventCategoryKeyBoard) & io.WantCaptureKeyboard;
+		}
+	}
+
 	void ImGuiLayer::Begin()
 	{
 		HZ_PROFILE_FUNCTION();

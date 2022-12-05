@@ -27,5 +27,7 @@ namespace Hazel {
 		float m_Rotation = 0.0f;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
+		bool m_ViewportFocused = false, m_ViewportHovered = false;
 	};
 }
