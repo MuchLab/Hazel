@@ -65,6 +65,8 @@ namespace Hazel {
 		static void DrawQuad(glm::vec2 position, Ref<SubTexture2D> subTexture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawQuad(glm::vec3 position, Ref<SubTexture2D> subTexture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
+		static void DrawQuad(glm::mat4 transform, glm::vec4 color, float tilingFactor = 1.0f);
+		static void DrawQuad(glm::mat4 transform, Ref<Texture2D> texture, float tilingFactor = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float tilingFactor = 1.0f);
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float rotation, glm::vec4 color, float tilingFactor = 1.0f);
