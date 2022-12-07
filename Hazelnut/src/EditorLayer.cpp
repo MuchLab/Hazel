@@ -24,10 +24,18 @@ namespace Hazel {
 		spec.Height = Hazel::Application::Get().GetWindow().GetHeight();
 		m_Framebuffer = Hazel::Framebuffer::Create(spec);
 
+		entt::entity m_EntityHandle = entt::entity();
+
 		m_ActiveScene = CreateRef<Scene>();
+		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
+		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		
+#if 0
+		m_SquareEntity = m_ActiveScene->CreateEntity();
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3{ -1.0f, -1.0f, 0.0f });
 		m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity, transform);
 		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquareEntity, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});		
+#endif
 	}
 
 	void EditorLayer::OnUpdate(Hazel::Timestep ts)
@@ -126,8 +134,16 @@ namespace Hazel {
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-		auto& sprite = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity);
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(sprite.Color));
+
+		if (m_SquareEntity)
+		{
+			ImGui::Separator();
+			auto& tag = m_SquareEntity.GetComponent<TagComponent>();
+			auto& sprite = m_SquareEntity.GetComponent<SpriteRendererComponent>();
+			ImGui::Text("Entity Tag: %s", tag.Tag.c_str());
+			ImGui::ColorEdit4("Square Color", glm::value_ptr(sprite.Color));
+			ImGui::Separator();
+		}
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
