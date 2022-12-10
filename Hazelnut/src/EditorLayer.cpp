@@ -29,24 +29,30 @@ namespace Hazel {
 		m_ActiveScene = CreateRef<Scene>();
 		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		
-#if 0
-		m_SquareEntity = m_ActiveScene->CreateEntity();
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3{ -1.0f, -1.0f, 0.0f });
-		m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity, transform);
-		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquareEntity, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});		
-#endif
+
+		m_PrimaryEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_PrimaryEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+
+		m_SecondEntity = m_ActiveScene->CreateEntity("Clip-Space Camera");
+		m_SecondEntity.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), false);
 	}
 
 	void EditorLayer::OnUpdate(Hazel::Timestep ts)
 	{
 		HZ_PROFILE_FUNCTION();
 
-		Hazel::Renderer2D::ResetStat();
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecifition();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+		}
 
-		m_Rotation += ts * 60.0f;
 		if(m_ViewportFocused)
 			m_CameraController.OnUpdate(ts);
+
+		Hazel::Renderer2D::ResetStat();
 
 		m_Framebuffer->Bind();
 		{
@@ -57,9 +63,7 @@ namespace Hazel {
 
 		{
 			HZ_PROFILE_SCOPE("Renerer2D::Draw");
-			Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 			m_ActiveScene->OnUpdate(ts);
-			Hazel::Renderer2D::EndScene();
 		}
 		m_Framebuffer->Unbind();
 	}
@@ -144,23 +148,29 @@ namespace Hazel {
 			ImGui::ColorEdit4("Square Color", glm::value_ptr(sprite.Color));
 			ImGui::Separator();
 		}
+		auto transform = glm::value_ptr(m_PrimaryEntity.GetComponent<TransformComponent>().Transform[3]);
+		ImGui::DragFloat3("Transform", transform);
+
+		if (ImGui::Checkbox("PrimaryCamera", &m_PrimaryCamera))
+		{
+			m_PrimaryEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+			m_SecondEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+		}
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Renderer");
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
-		//focus: true;hover: true;bock:false
-		//focus: true;hover: false;bock:true(false)
-		Application::Get().GetImGuiLayer()->BlockEvents((!m_ViewportFocused && !m_ViewportHovered) || (!m_ViewportFocused && m_ViewportHovered));
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
-		{
-			m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_CameraController.OnResize(viewportPanelSize.x, viewportPanelSize.y);
+#if 0
+		HZ_CORE_WARN("Focused:{0}", m_ViewportFocused);
+		HZ_CORE_WARN("Hovered:{0}", m_ViewportHovered);
+#endif
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-		}
+		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
 		auto colorAttachment = m_Framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image((void*)colorAttachment, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();

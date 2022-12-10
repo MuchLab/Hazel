@@ -28,6 +28,10 @@ namespace Hazel {
 
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
+		Entity m_PrimaryEntity;
+		Entity m_SecondEntity;
+
+		bool m_PrimaryCamera = true;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 

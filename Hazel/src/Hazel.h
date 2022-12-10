@@ -32,6 +32,7 @@
 #include "Hazel/Renderer/SubTexture2D.h"
 
 #include "Hazel/Renderer/OrthographicCameraController.h"
+#include "Hazel/Renderer/Camera.h"
 //-----------------------------------------------
 
 //---------Scene---------------------------------
