@@ -81,18 +81,18 @@ namespace Hazel {
 			if (!m_Minimize)
 			{
 				{
+					HZ_PROFILE_SCOPE("LayerStack OnUpdate");
+
+					for (Layer* layer : m_LayerStack)
+						layer->OnUpdate(ts);
+				}
+				{
 					HZ_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
 					m_ImGuiLayer->Begin();
 					for (Layer* layer : m_LayerStack)
 						layer->OnImGuiRender();
 					m_ImGuiLayer->End();
-				}
-				{
-					HZ_PROFILE_SCOPE("LayerStack OnUpdate");
-
-					for (Layer* layer : m_LayerStack)
-						layer->OnUpdate(ts);
 				}
 			}
 
