@@ -1,6 +1,6 @@
 #pragma once
 #include <entt.hpp>
-
+#include <string>
 #include "Hazel/Core/Timestep.h"
 
 namespace Hazel {
@@ -15,7 +15,8 @@ namespace Hazel {
 		Entity CreateEntity(const std::string& tag = "Entity");
 	private:
 		entt::registry m_Registry;
-		friend class Entity;
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+		friend class Entity;
+		friend class ScenePanel;
 	};
 }

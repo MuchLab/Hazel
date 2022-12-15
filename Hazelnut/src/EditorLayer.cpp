@@ -59,6 +59,8 @@ namespace Hazel {
 
 		m_PrimaryEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		m_ScenePanel = ScenePanel(m_ActiveScene);
 	}
 
 	void EditorLayer::OnUpdate(Hazel::Timestep ts)
@@ -155,7 +157,7 @@ namespace Hazel {
 
 			ImGui::EndMenuBar();
 		}
-
+		m_ScenePanel.OnImGuiRender();
 		ImGui::Begin("Settings");
 		auto stats = Hazel::Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
