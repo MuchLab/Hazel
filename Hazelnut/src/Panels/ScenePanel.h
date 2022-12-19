@@ -9,8 +9,9 @@ namespace Hazel {
 
 		void SetScenePanel(Ref<Scene>& scene) { m_Scene = scene; }
 		void OnImGuiRender();
+		void DrawComponents();
 	private:
 		Ref<Scene> m_Scene;
-		Entity m_SeletedContext;
+		Entity m_SelectedContext;
 	};
 }

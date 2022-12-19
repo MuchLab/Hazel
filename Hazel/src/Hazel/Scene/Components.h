@@ -40,7 +40,7 @@ namespace Hazel {
 	struct CameraComponent {
 		SceneCamera Camera;
 		bool Primary = true;
-		bool FixedAspectRadio = false;
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
