@@ -33,10 +33,10 @@ namespace Hazel {
 		m_SquareEntity = m_ActiveScene->CreateEntity("Red Square");
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-		m_PrimaryEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_PrimaryEntity = m_ActiveScene->CreateEntity("Camera A");
 		m_PrimaryEntity.AddComponent<CameraComponent>();
 
-		m_SecondEntity = m_ActiveScene->CreateEntity("Clip-Space Camera");
+		m_SecondEntity = m_ActiveScene->CreateEntity("Camera B");
 		m_SecondEntity.AddComponent<CameraComponent>().Primary = false;
 
 		class CameraController : public ScriptableEntity
@@ -46,17 +46,17 @@ namespace Hazel {
 			void OnDestroy() override {}
 			void OnUpdate(Timestep ts) override
 			{
-				auto& transform = GetComponent<TransformComponent>().Transform;
+				auto& translation = GetComponent<TransformComponent>().Translation;
 				float speed = 5.0f;
 
 				if (Input::IsKeyPressed(HZ_KEY_A))
-					transform[3][0] += speed * ts;
+					translation.x += speed * ts;
 				if(Input::IsKeyPressed(HZ_KEY_D))
-					transform[3][0] -= speed * ts;
+					translation.x -= speed * ts;
 				if(Input::IsKeyPressed(HZ_KEY_W))
-					transform[3][1] -= speed * ts;
+					translation.y -= speed * ts;
 				if(Input::IsKeyPressed(HZ_KEY_S))
-					transform[3][1] += speed * ts;
+					translation.y += speed * ts;
 			}
 		};
 
@@ -161,7 +161,7 @@ namespace Hazel {
 			ImGui::EndMenuBar();
 		}
 		m_ScenePanel.OnImGuiRender();
-		ImGui::Begin("Settings");
+		ImGui::Begin("Stats");
 		auto stats = Hazel::Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -169,29 +169,7 @@ namespace Hazel {
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-		if (m_SquareEntity)
-		{
-			ImGui::Separator();
-			auto& tag = m_SquareEntity.GetComponent<TagComponent>();
-			auto& sprite = m_SquareEntity.GetComponent<SpriteRendererComponent>();
-			ImGui::Text("Entity Tag: %s", tag.Tag.c_str());
-			ImGui::ColorEdit4("Square Color", glm::value_ptr(sprite.Color));
-			ImGui::Separator();
-		}
-		auto transform = glm::value_ptr(m_PrimaryEntity.GetComponent<TransformComponent>().Transform[3]);
-		ImGui::DragFloat3("Transform", transform);
-
-		if (ImGui::Checkbox("PrimaryCamera", &m_PrimaryCamera))
-		{
-			m_PrimaryEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-			m_SecondEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-		}
-		{
-			auto& camera = m_SecondEntity.GetComponent<CameraComponent>().Camera;
-			float orthoSize = camera.GetOrthographicSize();
-			if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-				camera.SetOrthographicSize(orthoSize);
-		}
+		
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
