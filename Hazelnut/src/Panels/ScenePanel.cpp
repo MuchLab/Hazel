@@ -10,19 +10,40 @@ namespace Hazel {
 	}
 	void ScenePanel::OnImGuiRender()
 	{
-		ImGui::Begin("ScenePanel");
+		ImGui::Begin("Scene");
+		
+		DrawTreeNodes();
+		
+		ImGui::End();
+		ImGui::Begin("Properties");
+
+		DrawComponents();
+
+		ImGui::End();
+
+	}
+	void ScenePanel::DrawTreeNodes()
+	{
 		m_Scene->m_Registry.each([&](auto entityID)
 			{
 				Entity entity = { entityID, m_Scene.get() };
 				auto& tag = entity.GetComponent<TagComponent>().Tag;
 				//ImGui::Text(tag.c_str());
-				ImGuiTreeNodeFlags flags = ((m_SelectedContext == entity) ? ImGuiTreeNodeFlags_Selected : 0)| ImGuiTreeNodeFlags_OpenOnArrow;
+				ImGuiTreeNodeFlags flags = ((m_SelectedContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 				bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entityID, flags, tag.c_str());
 				if (ImGui::IsItemClicked())
 				{
-					m_SelectedContext = entity;	
+					m_SelectedContext = entity;
 				}
-					
+
+				bool entityDeleted = false;
+				if (ImGui::BeginPopupContextItem())
+				{
+					if (ImGui::MenuItem("Delete Entity"))
+						entityDeleted = true;
+					ImGui::EndPopup();
+				}
+
 				if (opened)
 				{
 					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
@@ -31,15 +52,31 @@ namespace Hazel {
 						ImGui::TreePop();
 					ImGui::TreePop();
 				}
-				
+
+				if (entityDeleted)
+				{
+					m_Scene->DestroyEntity(entity);
+					if (m_SelectedContext == entity)
+						m_SelectedContext = {};
+				}
 			});
-		ImGui::End();
-		DrawComponents();
+
+		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			m_SelectedContext = {};
+
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+			{
+				m_Scene->CreateEntity("Empty Entity");
+			}
+			ImGui::EndPopup();
+		}
 	}
 
 	void ScenePanel::DrawComponents()
 	{
-		ImGui::Begin("Properties");
+		
 		if (m_SelectedContext)
 		{
 			if (m_SelectedContext.HasComponent<TagComponent>())
@@ -53,6 +90,9 @@ namespace Hazel {
 					tag = std::string(buffer);
 				}
 			}
+
+			ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+
 			if (m_SelectedContext.HasComponent<TransformComponent>())
 			{
 				if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
@@ -64,7 +104,7 @@ namespace Hazel {
 					DrawDragFloat3("Rotation", degrees);
 					rotation = glm::radians(degrees);
 					auto& scale = m_SelectedContext.GetComponent<TransformComponent>().Scale;
-					DrawDragFloat3("Scale", scale);
+					DrawDragFloat3("Scale", scale, 1.0f);
 
 					ImGui::TreePop();
 				}
@@ -131,16 +171,52 @@ namespace Hazel {
 			}
 			if (m_SelectedContext.HasComponent<SpriteRendererComponent>())
 			{
-				if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "SpriteRenderer"))
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+				bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer");
+				ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+				if (ImGui::Button("+", ImVec2{ 20, 20 }))
 				{
-					auto& color = m_SelectedContext.GetComponent<SpriteRendererComponent>().Color;
-					ImGui::ColorEdit4("Color", glm::value_ptr(color));
+					ImGui::OpenPopup("ComponentSettings");
+				}
+				ImGui::PopStyleVar();
 
+				bool removeComponent = false;
+				if (ImGui::BeginPopup("ComponentSettings"))
+				{
+					if (ImGui::MenuItem("Remove component"))
+						removeComponent = true;
+
+					ImGui::EndPopup();
+				}
+
+				if (open)
+				{
+					auto& src = m_SelectedContext.GetComponent<SpriteRendererComponent>();
+					ImGui::ColorEdit4("Color", glm::value_ptr(src.Color));
 					ImGui::TreePop();
 				}
+
+				if (removeComponent)
+					m_SelectedContext.RemoveComponent<SpriteRendererComponent>();
+			}
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				if (ImGui::MenuItem("Camera"))
+				{
+					m_SelectedContext.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
+					m_SelectedContext.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 		}
-		ImGui::End();
+		
 	}
 
 	void ScenePanel::DrawDragFloat3(const std::string& label, glm::vec3& values, float resetValue, float columnWidth)
