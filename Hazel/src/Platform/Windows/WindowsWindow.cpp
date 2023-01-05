@@ -9,6 +9,8 @@
 
 namespace Hazel {
 
+	float Window::s_HighDPIScaleFactor = 1.0f;
+
 	static unsigned int s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error_code, const char* description)

@@ -63,7 +63,7 @@ namespace Hazel {
 		m_PrimaryEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
-		m_ScenePanel = ScenePanel(m_ActiveScene);
+		m_SceneHierarchyPanel = SceneHierarchyPanel(m_ActiveScene);
 	}
 
 	void EditorLayer::OnUpdate(Hazel::Timestep ts)
@@ -140,11 +140,15 @@ namespace Hazel {
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWinSizeX = style.WindowMinSize.x;
+		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -160,7 +164,7 @@ namespace Hazel {
 
 			ImGui::EndMenuBar();
 		}
-		m_ScenePanel.OnImGuiRender();
+		m_SceneHierarchyPanel.OnImGuiRender();
 		ImGui::Begin("Stats");
 		auto stats = Hazel::Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");

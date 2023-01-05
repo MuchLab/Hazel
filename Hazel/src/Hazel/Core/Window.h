@@ -6,6 +6,9 @@
 #include "Hazel/Event/Event.h"
 
 namespace Hazel {
+
+	
+
 	struct WindowProps 
 	{
 		std::string Title;
@@ -13,8 +16,8 @@ namespace Hazel {
 		unsigned int Height;
 
 		WindowProps(const std::string& title = "Hazel Engine",
-			unsigned int width = 1200,
-			unsigned int height = 720)
+			unsigned int width = 1600,
+			unsigned int height = 900)
 			: Title(title), Width(width), Height(height)
 		{
 		}
@@ -38,5 +41,7 @@ namespace Hazel {
 		virtual void* GetNativeWindow() const = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
+	public:
+		static float s_HighDPIScaleFactor;
 	};
 }
