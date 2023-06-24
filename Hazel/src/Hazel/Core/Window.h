@@ -2,7 +2,7 @@
 
 #include "hzpch.h"
 
-#include "Hazel/Core/Core.h"
+#include "Hazel/Core/Base.h"
 #include "Hazel/Event/Event.h"
 
 namespace Hazel {
@@ -23,7 +23,7 @@ namespace Hazel {
 		}
 	};
 
-	class HAZEL_API Window
+	class Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;

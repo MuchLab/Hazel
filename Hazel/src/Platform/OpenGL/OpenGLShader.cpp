@@ -48,7 +48,7 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
-		std::vector<GLint> shaderIds(shaderSources.size());
+		std::vector<GLint> shaderIds;
 
 		GLuint program = glCreateProgram();
 

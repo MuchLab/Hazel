@@ -37,13 +37,13 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
-		glBindBuffer(GL_VERTEX_ARRAY, m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 	void OpenGLVertexBuffer::Unbind() const
 	{
 		HZ_PROFILE_FUNCTION();
 
-		glBindBuffer(GL_VERTEX_ARRAY, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)

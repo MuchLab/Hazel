@@ -1,8 +1,8 @@
 #pragma once
-#include "Core.h"
+#include "Base.h"
 #include "Layer.h"
 namespace Hazel {
-	class HAZEL_API LayerStack
+	class LayerStack
 	{
 	public:
 		LayerStack();
