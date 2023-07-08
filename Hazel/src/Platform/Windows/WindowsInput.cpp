@@ -2,37 +2,41 @@
 #include "Hazel/Core/Input.h"
 
 #include "Hazel/Core/Application.h"
-#include  <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
 namespace Hazel {
 
-	bool Input::IsKeyPressed(int keycode)
+	bool Input::IsKeyPressed(const KeyCode key)
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetKey(window, keycode);
+		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		auto state = glfwGetKey(window, static_cast<int32_t>(key));
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
-	bool Input::IsMouseButtonPressed(int button)
+
+	bool Input::IsMouseButtonPressed(const MouseCode button)
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetMouseButton(window, button);
+		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 		return state == GLFW_PRESS;
 	}
-	std::pair<float, float> Input::GetMousePos()
+
+	glm::vec2 Input::GetMousePosition()
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		double xPos, yPos;
-		glfwGetCursorPos(window, &xPos, &yPos);
-		return { (float)xPos, (float)yPos };
+		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+
+		return { (float)xpos, (float)ypos };
 	}
+
 	float Input::GetMouseX()
 	{
-		auto[x, y] = GetMousePos();
-		return x;
+		return GetMousePosition().x;
 	}
+
 	float Input::GetMouseY()
 	{
-		auto[x, y] = GetMousePos();
-		return y;
+		return GetMousePosition().y;
 	}
+
 }

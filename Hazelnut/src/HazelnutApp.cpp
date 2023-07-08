@@ -1,31 +1,27 @@
 #include <Hazel.h>
-#include <Hazel/EntryPoint.h>
+#include <Hazel/Core/EntryPoint.h>
 
 #include "EditorLayer.h"
 
 namespace Hazel {
-	class HazelnutApp : public Application
+
+	class Hazelnut : public Application
 	{
 	public:
-		HazelnutApp();
-		~HazelnutApp();
+		Hazelnut()
+			: Application("Hazelnut")
+		{
+			PushLayer(new EditorLayer());
+		}
 
-	private:
-
+		~Hazelnut()
+		{
+		}
 	};
-
-	HazelnutApp::HazelnutApp()
-	{
-		//PushLayer(new ExampleLayer());
-		PushLayer(new EditorLayer());
-	}
-
-	HazelnutApp::~HazelnutApp()
-	{
-	}
 
 	Application* CreateApplication()
 	{
-		return new HazelnutApp();
+		return new Hazelnut();
 	}
+
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Hazel/Renderer/VertexArray.h"
 
 namespace Hazel {
@@ -7,21 +8,21 @@ namespace Hazel {
 	{
 	public:
 		OpenGLVertexArray();
-		~OpenGLVertexArray();
+		virtual ~OpenGLVertexArray();
 
-		virtual void Bind() override;
-		virtual void Unbind() override;
-		virtual void AddVertexBuffer(Ref<VertexBuffer>& buffer) override;
-		virtual void SetIndexBuffer(Ref<IndexBuffer>& buffer) override;
-		virtual inline const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; };
-		virtual inline const Ref<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; };
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
 
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
+
+		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; }
 	private:
 		uint32_t m_RendererID;
+		uint32_t m_VertexBufferIndex = 0;
 		std::vector<Ref<VertexBuffer>> m_VertexBuffers;
 		Ref<IndexBuffer> m_IndexBuffer;
 	};
 
 }
-
-

@@ -1,7 +1,9 @@
 #pragma once
+
 #include "Hazel/Renderer/Camera.h"
 
 namespace Hazel {
+
 	class SceneCamera : public Camera
 	{
 	public:
@@ -15,29 +17,28 @@ namespace Hazel {
 
 		void SetViewportSize(uint32_t width, uint32_t height);
 
-		float GetPerspectiveVerticalFOV() const { return m_PerspectiveFov; }
-		void SetPerspectiveVerticalFOV(float fov) { m_PerspectiveFov = fov; RecalculateProjection(); }
+		float GetPerspectiveVerticalFOV() const { return m_PerspectiveFOV; }
+		void SetPerspectiveVerticalFOV(float verticalFov) { m_PerspectiveFOV = verticalFov; RecalculateProjection(); }
 		float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
-		void SetPerspectiveNearClip(float p_Near) { m_PerspectiveNear = p_Near; RecalculateProjection(); }
+		void SetPerspectiveNearClip(float nearClip) { m_PerspectiveNear = nearClip; RecalculateProjection(); }
 		float GetPerspectiveFarClip() const { return m_PerspectiveFar; }
-		void SetPerspectiveFarClip(float p_Far) { m_PerspectiveFar = p_Far; RecalculateProjection(); }
+		void SetPerspectiveFarClip(float farClip) { m_PerspectiveFar = farClip; RecalculateProjection(); }
 
 		float GetOrthographicSize() const { return m_OrthographicSize; }
 		void SetOrthographicSize(float size) { m_OrthographicSize = size; RecalculateProjection(); }
 		float GetOrthographicNearClip() const { return m_OrthographicNear; }
-		void SetOrthographicNearClip(float o_Near) { m_OrthographicNear = o_Near; RecalculateProjection(); }
+		void SetOrthographicNearClip(float nearClip) { m_OrthographicNear = nearClip; RecalculateProjection(); }
 		float GetOrthographicFarClip() const { return m_OrthographicFar; }
-		void SetOrthographicFarClip(float o_Far) { m_OrthographicFar = o_Far; RecalculateProjection(); }
+		void SetOrthographicFarClip(float farClip) { m_OrthographicFar = farClip; RecalculateProjection(); }
 
 		ProjectionType GetProjectionType() const { return m_ProjectionType; }
-		void SetProjectionType(ProjectionType projectionType) { m_ProjectionType = projectionType; }
-
+		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
 	private:
 		void RecalculateProjection();
 	private:
 		ProjectionType m_ProjectionType = ProjectionType::Orthographic;
 
-		float m_PerspectiveFov = glm::radians(45.0f);
+		float m_PerspectiveFOV = glm::radians(45.0f);
 		float m_PerspectiveNear = 0.01f, m_PerspectiveFar = 1000.0f;
 
 		float m_OrthographicSize = 10.0f;
@@ -45,4 +46,5 @@ namespace Hazel {
 
 		float m_AspectRatio = 0.0f;
 	};
+
 }

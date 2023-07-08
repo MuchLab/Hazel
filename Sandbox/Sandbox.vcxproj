@@ -138,17 +138,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layer\ExampleLayer.h" />
-    <ClInclude Include="src\Layer\Sandbox2DLayer.h" />
-    <ClInclude Include="src\Particle\ParticleSystem.h" />
-    <ClInclude Include="src\Utils\Random.h" />
+    <ClInclude Include="src\ExampleLayer.h" />
+    <ClInclude Include="src\Sandbox2D.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Layer\ExampleLayer.cpp" />
-    <ClCompile Include="src\Layer\Sandbox2DLayer.cpp" />
-    <ClCompile Include="src\Particle\ParticleSystem.cpp" />
+    <ClCompile Include="src\ExampleLayer.cpp" />
+    <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
-    <ClCompile Include="src\Utils\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hazel\Hazel.vcxproj">

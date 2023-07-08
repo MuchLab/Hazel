@@ -1,28 +1,22 @@
 #include <Hazel.h>
-#include <Hazel/EntryPoint.h>
+#include <Hazel/Core/EntryPoint.h>
 
-#include "Layer/ExampleLayer.h"
-#include "Layer/Sandbox2DLayer.h"
+#include "Sandbox2D.h"
+#include "ExampleLayer.h"
 
 class Sandbox : public Hazel::Application
 {
 public:
-	Sandbox();
-	~Sandbox();
+	Sandbox()
+	{
+		// PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
+	}
 
-private:
-
+	~Sandbox()
+	{
+	}
 };
-
-Sandbox::Sandbox()
-{
-	//PushLayer(new ExampleLayer());
-	PushLayer(new Sandbox2DLayer());
-}
-
-Sandbox::~Sandbox()
-{
-}
 
 Hazel::Application* Hazel::CreateApplication()
 {

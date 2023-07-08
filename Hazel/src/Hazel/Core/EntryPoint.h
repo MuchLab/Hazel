@@ -1,4 +1,5 @@
 #pragma once
+#include "Hazel/Core/Base.h"
 
 #ifdef HZ_PLATFORM_WINDOWS
 
@@ -21,4 +22,4 @@ int main(int argc, char** argv)
 	HZ_PROFILE_END_SESSION();
 }
 
-#endif // HZ_PLATFORM_WINDOWS
+#endif

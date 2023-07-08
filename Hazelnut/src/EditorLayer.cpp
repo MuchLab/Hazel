@@ -1,101 +1,120 @@
 #include "EditorLayer.h"
+#include <imgui/imgui.h>
 
-#include "glm/glm.hpp"
-#include "imGui/imgui.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Hazel/Scene/SceneSerializer.h"
 
+#include "Hazel/Utils/PlatformUtils.h"
+
 namespace Hazel {
+
 	EditorLayer::EditorLayer()
-		: m_CameraController(5.0f, 1280.0f / 720.0f, true)
+		: Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f), m_SquareColor({ 0.2f, 0.3f, 0.8f, 1.0f })
 	{
-		HZ_PROFILE_FUNCTION();
-
-		Hazel::Renderer2D::Init();
-		m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
-		m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
-
 	}
 
 	void EditorLayer::OnAttach()
 	{
 		HZ_PROFILE_FUNCTION();
 
-		Hazel::FramebufferSpecification spec;
-		spec.Width = Hazel::Application::Get().GetWindow().GetWidth();
-		spec.Height = Hazel::Application::Get().GetWindow().GetHeight();
-		m_Framebuffer = Hazel::Framebuffer::Create(spec);
+		m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
 
-		entt::entity m_EntityHandle = entt::entity();
+		FramebufferSpecification fbSpec;
+		fbSpec.Width = 1280;
+		fbSpec.Height = 720;
+		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_ActiveScene = CreateRef<Scene>();
-		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
-		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-		m_SquareEntity = m_ActiveScene->CreateEntity("Red Square");
-		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+#if 0
+		// Entity
+		auto square = m_ActiveScene->CreateEntity("Green Square");
+		square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
-		m_PrimaryEntity = m_ActiveScene->CreateEntity("Camera A");
-		m_PrimaryEntity.AddComponent<CameraComponent>();
+		auto redSquare = m_ActiveScene->CreateEntity("Red Square");
+		redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-		m_SecondEntity = m_ActiveScene->CreateEntity("Camera B");
-		m_SecondEntity.AddComponent<CameraComponent>().Primary = false;
+		m_SquareEntity = square;
+
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+		m_CameraEntity.AddComponent<CameraComponent>();
+
+		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
+		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
+		cc.Primary = false;
 
 		class CameraController : public ScriptableEntity
 		{
 		public:
-			void OnCreate() override {}
-			void OnDestroy() override {}
-			void OnUpdate(Timestep ts) override
+			virtual void OnCreate() override
 			{
 				auto& translation = GetComponent<TransformComponent>().Translation;
+				translation.x = rand() % 10 - 5.0f;
+			}
+
+			virtual void OnDestroy() override
+			{
+			}
+
+			virtual void OnUpdate(Timestep ts) override
+			{
+				auto& translation = GetComponent<TransformComponent>().Translation;
+
 				float speed = 5.0f;
 
-				if (Input::IsKeyPressed(HZ_KEY_A))
-					translation.x += speed * ts;
-				if(Input::IsKeyPressed(HZ_KEY_D))
+				if (Input::IsKeyPressed(Key::A))
 					translation.x -= speed * ts;
-				if(Input::IsKeyPressed(HZ_KEY_W))
-					translation.y -= speed * ts;
-				if(Input::IsKeyPressed(HZ_KEY_S))
+				if (Input::IsKeyPressed(Key::D))
+					translation.x += speed * ts;
+				if (Input::IsKeyPressed(Key::W))
 					translation.y += speed * ts;
+				if (Input::IsKeyPressed(Key::S))
+					translation.y -= speed * ts;
 			}
 		};
 
-		m_PrimaryEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_SecondEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+#endif
 
-		m_SceneHierarchyPanel = SceneHierarchyPanel(m_ActiveScene);
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
-	void EditorLayer::OnUpdate(Hazel::Timestep ts)
+	void EditorLayer::OnDetach()
+	{
+		HZ_PROFILE_FUNCTION();
+	}
+
+	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		HZ_PROFILE_FUNCTION();
 
-		if (FramebufferSpecification spec = m_Framebuffer->GetSpecifition();
-			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+		// Resize
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		if(m_ViewportFocused)
+		// Update
+		if (m_ViewportFocused)
 			m_CameraController.OnUpdate(ts);
 
-		Hazel::Renderer2D::ResetStat();
-
+		// Render
+		Renderer2D::ResetStats();
 		m_Framebuffer->Bind();
-		{
-			HZ_PROFILE_SCOPE("RenderCommand::Prepare");
-			Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-			Hazel::RenderCommand::Clear();
-		}
+		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		RenderCommand::Clear();
 
-		{
-			HZ_PROFILE_SCOPE("Renerer2D::Draw");
-			m_ActiveScene->OnUpdate(ts);
-		}
+		// Update scene
+		m_ActiveScene->OnUpdate(ts);
+
 		m_Framebuffer->Unbind();
 	}
 
@@ -103,6 +122,7 @@ namespace Hazel {
 	{
 		HZ_PROFILE_FUNCTION();
 
+		// Note: Switch this to true to enable dockspace
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen_persistant = true;
 		bool opt_fullscreen = opt_fullscreen_persistant;
@@ -149,6 +169,7 @@ namespace Hazel {
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+
 		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
@@ -157,61 +178,125 @@ namespace Hazel {
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
 				// which we can't undo at the moment without finer window depth/z control.
-				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-				if (ImGui::MenuItem("Serialize"))
-				{
-					SceneSerializer serializer(m_ActiveScene);
-					serializer.Serialize("assets/scenes/Example.hazel");
-				}
+				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);1
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
 
-				if (ImGui::MenuItem("Deserialize"))
-				{
-					SceneSerializer serializer(m_ActiveScene);
-					serializer.Deserialize("assets/scenes/Example.hazel");
-				}
-				if (ImGui::MenuItem("Exit")) Hazel::Application::Get().Close();
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					OpenScene();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
+
+				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
 		}
+
 		m_SceneHierarchyPanel.OnImGuiRender();
+
 		ImGui::Begin("Stats");
-		auto stats = Hazel::Renderer2D::GetStats();
+
+		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-		
 		ImGui::End();
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("Renderer");
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::Begin("Viewport");
+
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
-#if 0
-		HZ_CORE_WARN("Focused:{0}", m_ViewportFocused);
-		HZ_CORE_WARN("Hovered:{0}", m_ViewportHovered);
-#endif
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		auto colorAttachment = m_Framebuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)colorAttachment, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+		uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		ImGui::End();
 		ImGui::PopStyleVar();
 
 		ImGui::End();
 	}
 
-	void EditorLayer::OnEvent(Hazel::Event& event)
+	void EditorLayer::OnEvent(Event& e)
 	{
-		HZ_PROFILE_FUNCTION();
+		m_CameraController.OnEvent(e);
 
-		m_CameraController.OnEvent(event);
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		// Shortcuts
+		if (e.GetRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+		switch (e.GetKeyCode())
+		{
+			case Key::N:
+			{
+				if (control)
+					NewScene();
+
+				break;
+			}
+			case Key::O:
+			{
+				if (control)
+					OpenScene();
+
+				break;
+			}
+			case Key::S:
+			{
+				if (control && shift)
+					SaveSceneAs();
+
+				break;
+			}
+		}
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		if (!filepath.empty())
+		{
+			m_ActiveScene = CreateRef<Scene>();
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Deserialize(filepath);
+		}
+	}
+
+	void EditorLayer::SaveSceneAs()
+	{
+		std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		if (!filepath.empty())
+		{
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(filepath);
+		}
+	}
+
 }
